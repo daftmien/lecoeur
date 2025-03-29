@@ -27,23 +27,18 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Restaurer immédiatement la dernière slide atteinte
-  const lastSlide = localStorage.getItem('lastSlideURL');
-  if (lastSlide && window.location.href !== lastSlide) {
-    window.history.replaceState(null, null, lastSlide);
-    window.location.reload();
+  const geniallyDiv = document.querySelector('.genially-embed');
+
+  // Restaurer immédiatement l'état complet du jeu
+  const savedHTML = localStorage.getItem('geniallyState');
+  if (savedHTML) {
+    geniallyDiv.innerHTML = savedHTML;
   }
 
-  // Surveiller précisément le changement d'URL effectué par Genially (SPA)
-  let previousUrl = window.location.href;
-  const observer = new MutationObserver(() => {
-    if (previousUrl !== window.location.href) {
-      previousUrl = window.location.href;
-      localStorage.setItem('lastSlideURL', window.location.href);
-    }
-  });
-
-  observer.observe(document, { subtree: true, childList: true });
+  // Sauvegarder entièrement l'état du jeu chaque seconde
+  setInterval(() => {
+    localStorage.setItem('geniallyState', geniallyDiv.innerHTML);
+  }, 1000);
 });
 </script>
 </body></html>
