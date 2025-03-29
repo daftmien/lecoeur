@@ -26,19 +26,19 @@ if ('serviceWorker' in navigator) {
   }
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const geniallyDiv = document.querySelector('.genially-embed');
-
-  // Restaurer immédiatement l'état complet du jeu
-  const savedHTML = localStorage.getItem('geniallyState');
-  if (savedHTML) {
-    geniallyDiv.innerHTML = savedHTML;
+window.onload = () => {
+  // Restaurer l'état sauvegardé précisément au démarrage
+  const state = localStorage.getItem('genially-react-state');
+  if (state) {
+    window.postMessage({ type: 'restoreState', state: JSON.parse(state) }, '*');
   }
 
-  // Sauvegarder entièrement l'état du jeu chaque seconde
-  setInterval(() => {
-    localStorage.setItem('geniallyState', geniallyDiv.innerHTML);
-  }, 1000);
-});
+  // Sauvegarder automatiquement l'état interne de Genially régulièrement
+  window.addEventListener('message', event => {
+    if (event.data.type === 'saveState') {
+      localStorage.setItem('genially-react-state', JSON.stringify(event.data.state));
+    }
+  });
+};
 </script>
 </body></html>
