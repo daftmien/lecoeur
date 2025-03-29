@@ -27,16 +27,23 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Charger immédiatement la dernière position sauvegardée
+  // Restaurer immédiatement la dernière slide atteinte
   const lastSlide = localStorage.getItem('lastSlideURL');
-  if (lastSlide && location.href !== lastSlide) {
-    location.href = lastSlide;
+  if (lastSlide && window.location.href !== lastSlide) {
+    window.history.replaceState(null, null, lastSlide);
+    window.location.reload();
   }
 
-  // Sauvegarder automatiquement à chaque changement d'URL
-  setInterval(() => {
-    localStorage.setItem('lastSlideURL', location.href);
-  }, 500); // sauvegarde l'URL toutes les 500 ms
+  // Surveiller précisément le changement d'URL effectué par Genially (SPA)
+  let previousUrl = window.location.href;
+  const observer = new MutationObserver(() => {
+    if (previousUrl !== window.location.href) {
+      previousUrl = window.location.href;
+      localStorage.setItem('lastSlideURL', window.location.href);
+    }
+  });
+
+  observer.observe(document, { subtree: true, childList: true });
 });
 </script>
 </body></html>
