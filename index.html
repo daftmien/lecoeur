@@ -25,4 +25,18 @@ if ('serviceWorker' in navigator) {
     });
   }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Charger immédiatement la dernière position sauvegardée
+  const lastSlide = localStorage.getItem('lastSlideURL');
+  if (lastSlide && location.href !== lastSlide) {
+    location.href = lastSlide;
+  }
+
+  // Sauvegarder automatiquement à chaque changement d'URL
+  setInterval(() => {
+    localStorage.setItem('lastSlideURL', location.href);
+  }, 500); // sauvegarde l'URL toutes les 500 ms
+});
+</script>
 </body></html>
